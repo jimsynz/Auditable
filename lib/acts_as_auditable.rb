@@ -154,7 +154,7 @@ module MashdCc
                 log << "Instance #{self.class.name}(#{read_attribute :id}) modified by #{ident}."
                 log << "\tField #{opts[:column]} changed from #{opts[:old].inspect} to #{opts[:new].inspect}."
               when :access
-                log << "Instance #{self.class.name}(#{read_attribute :id}), field #{column}  accessed by #{ident}."
+                log << "Instance #{self.class.name}(#{read_attribute :id}), field #{opts[:column]}  accessed by #{ident}."
               end
               log << "\tCurrent field values are:"
               columns.each do |column|
