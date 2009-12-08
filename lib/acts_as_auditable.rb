@@ -57,16 +57,27 @@ module MashdCc
             RUBY
           end
           if options[:when].member? :deleted
-            m = Helpers.random_method("before_destroy")
-            self.class_eval <<-RUBY
-              before_destroy :#{m}
+            if self.class.instance_methods.member? "#{column}="
+              m = Helpers.random_method("before_destroy")
+              self.class_eval <<-RUBY
+              alias :before_destroy :#{m}
 
               private
 
-              def #{m}
+              def before_destroy
+                self.#{do_log}(:action => :delete)
+              #{m}
+              end
+              RUBY
+            else
+              self.class_eval <<-RUBY
+              private
+
+              def before_destroy
                 self.#{do_log}(:action => :delete)
               end
-            RUBY
+              RUBY
+            end
           end
           if options[:when].member? :saved
             m = Helpers.random_method("after_save")
