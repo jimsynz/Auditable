@@ -6,7 +6,7 @@ auditable_dir = File.dirname(__FILE__)
 rails_dir = File.join(auditable_dir, '..', '..', '..')
 
 puts "* Generating model and migration..."
-system "#{File.join(rails_dir, 'script', 'generate')} model audit audit_type:string audit_id:integer log:text identity:string"
+system "#{File.join(rails_dir, 'script', 'generate')} model audit auditable_type:string auditable_id:integer log:text identity:string"
 
 puts "* Making model polymorphic..."
 model = File.open(File.join(rails_dir,'app','models','audit.rb'), 'w')

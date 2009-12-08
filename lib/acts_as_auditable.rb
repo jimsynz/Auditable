@@ -37,7 +37,6 @@ module MashdCc
           end
           if options[:identity].is_a? Proc
             get_identity = Helpers.random_method("get_identity")
-            puts "Get_identity = #{get_identity}"
             self.class_eval do
               define_method get_identity.to_sym do
                 f = options[:identity]
