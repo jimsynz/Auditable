@@ -207,7 +207,28 @@ module MashdCc
               end
             end
           end
+          # Only if we have successfully made it to the end
+          # and have installed all our helper functions do
+          # we let the world know that this model is 
+          # auditable.
+          # This is a pretty nasty hack, but for class variables
+          # seem to be shared between all models (something to do
+          # with them all sharing the same base class I think).
+          self.class_eval <<-RUBY
+            class AuditableEnabled
+            end
+          RUBY
         end
+
+        def auditable?
+          begin
+            self.const_get 'AuditableEnabled'
+            return true
+          rescue NameError
+            return false
+          end
+        end
+
       end
     end
   end
