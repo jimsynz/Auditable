@@ -21,6 +21,7 @@ migration.puts '      t.string :identity'
 migration.puts ''
 migration.puts '      t.timestamps'
 migration.puts '    end'
+migration.puts '  end'
 migration.puts 'end'
 migration.close
 puts '* Removing model audit.rb'
