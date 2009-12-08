@@ -44,6 +44,11 @@ module MashdCc
               end
             end
           end
+          self.class_eval <<-RUBY
+            def audit(message)
+              self.#{do_log}(:action => :arbitrary, :message => message)
+            end
+          RUBY
           if options[:when].member? :created
             m = Helpers.random_method("after_create")
             self.class_eval <<-RUBY
@@ -166,6 +171,9 @@ module MashdCc
                 log << "\tField #{opts[:column]} changed from #{opts[:old].inspect} to #{opts[:new].inspect}."
               when :access
                 log << "Instance #{self.class.name}(#{read_attribute :id}), field #{opts[:column]}  accessed by #{ident}."
+              when :arbitrary
+                log << "Arbitrary audit of #{self.class.name}(#{read_attribute :id}) user #Pident}."
+                (opts[:message] / "\n").collect { |line| log << "\t#{line}" }
               end
               log << "\tCurrent field values are:"
               columns.each do |column|
