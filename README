@@ -20,12 +20,36 @@ Example
 Install Auditable using the plugin script:
 
   $ ./script/plugin install git://github.com/jamesotron/Auditable.git
+  Initialized empty Git repository in /Users/jnh/tmp/test/vendor/plugins/Auditable/.git/
+  remote: Counting objects: 22, done.
+  remote: Compressing objects: 100% (19/19), done.
+  remote: Total 22 (delta 4), reused 0 (delta 0)
+  Unpacking objects: 100% (22/22), done.
+  From git://github.com/jamesotron/Auditable
+   * branch            HEAD       -> FETCH_HEAD
+  * Generating model and migration...
+	exists  app/models/
+	exists  test/unit/
+	exists  test/fixtures/
+	create  app/models/audit.rb
+	create  test/unit/audit_test.rb
+	create  test/fixtures/audits.yml
+	create  db/migrate
+	create  db/migrate/20091208005219_create_audits.rb
+  * Making model polymorphic...
+  * You probably want to run rake db:migrate now.
+  * Done.
 
 Auditable will generate a model and migration called Audit, which you can
 safely remove if you don't want to use the default model.
 If you want to use the default Audit model then run
 
   $ rake db:migrate
+  (in /Users/jnh/tmp/test)
+  ==  CreateAudits: migrating ===================================================
+  -- create_table(:audits)
+     -> 0.0032s
+  ==  CreateAudits: migrated (0.0035s) ==========================================
 
 to create the table in your database.
 
