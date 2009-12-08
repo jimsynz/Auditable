@@ -1,0 +1,76 @@
+Auditable
+=========
+
+Auditable is a simple rails plugin that let's you keep audit logs about
+whom is making what changes to your models.
+You can always get the latest version of this plugin from Github:
+  - http://github.com/jamesotron/Auditable [web url]
+  - git://github.com/jamesotron/Auditable.git [clone url]
+
+If you're using Auditable in production please email me and give me your
+feedback to james@mashd.cc.  Feel free to fork Auditable on github and
+or send me patches, I'm always interested in use cases.
+
+Auditable is released under the Mozilla MPL 1.1, all code is copyright
+2009 James Harton.
+
+Example
+=======
+
+Install Auditable using the plugin script:
+
+  $ ./script/plugin install git://github.com/jamesotron/Auditable.git
+
+Auditable will generate a model and migration called Audit, which you can
+safely remove if you don't want to use the default model.
+If you want to use the default Audit model then run
+
+  $ rake db:migrate
+
+to create the table in your database.
+
+Now on any models you want you can simply add an acts_as_auditable line:
+
+class WorrisomeData < ActiveRecord::Base
+
+  acts_as_auditable
+
+end
+
+acts_as_auditable defaults to paranoid, so you may wish to change it, options
+available are:
+
+  :using =>
+     - symbol pointing to the polymorphic model to use for storing audit
+       logs. Defaults to :auditable. Only useful if you are defining your
+       own Audit model.
+  :relation => 
+     - symbol pointing to the relationship mapping for audit logs. Defaults
+       to :audits. Useful if you want to access the audit log by a method
+       other than Model.audits()
+  :when => []
+     - an array containing symbols describing on which actions to write
+       audit logs. Defaults to 
+         [ :accessed, :modified, :saved, :created, :deleted ].
+  :identity =>
+     - lambda block containing any code needed to retrieve the user
+       identifier.  Defaults to 
+         lambda { "Unknown user" }. You might
+       want to try something like
+         lamba { ApplicationController.session[:current_user].name } 
+       if you're using restful_authentication.
+  :for => []
+     - an array of symbols naming the model fields you wish to audit.
+       Defaults to [ :all ] (:all is a special name meaning all fields).
+       Note that you can never audit :id because it will cause an infinite
+       loop.
+  :log_field =>
+     - A symbol naming the text field in the auditor model to store the
+       log information in. Only useful if you need something more than the
+       default Audit model.
+  :identity_field =>
+     - A symbol naming the string field in the auditor model to store the
+       user's identity information in. Only useful if you need something
+       more than the default Audit model.
+
+Copyright (c) 2009 James Harton, released under the Mozilla Public License version 1.1 
