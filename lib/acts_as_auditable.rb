@@ -172,7 +172,7 @@ module MashdCc
               when :access
                 log << "Instance #{self.class.name}(#{read_attribute :id}), field #{opts[:column]}  accessed by #{ident}."
               when :arbitrary
-                log << "Arbitrary audit of #{self.class.name}(#{read_attribute :id}) user #Pident}."
+                log << "Arbitrary audit of #{self.class.name}(#{read_attribute :id}) user #{ident}."
                 opts[:message].split("\n").collect { |line| log << "\t#{line}" }
               end
               log << "\tCurrent field values are:"
