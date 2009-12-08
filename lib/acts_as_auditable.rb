@@ -57,7 +57,7 @@ module MashdCc
             RUBY
           end
           if options[:when].member? :deleted
-            if self.class.instance_methods.member? "#{column}="
+            if self.class.instance_methods.member? "before_destroy"
               m = Helpers.random_method("before_destroy")
               self.class_eval <<-RUBY
               alias :before_destroy :#{m}
