@@ -93,7 +93,7 @@ module MashdCc
           columns = columns - [ 'id' ]
           if options[:when].member? :modified
             # Catch if someone modifies :id.
-            (columns + [ :id ]).each do |column|
+            (columns + [ 'id' ]).each do |column|
               if self.class.instance_methods.member? "#{column}="
                 m = Helpers.random_method("#{column}=")
                 self.class_eval <<-RUBY
