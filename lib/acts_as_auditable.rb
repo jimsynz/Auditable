@@ -71,7 +71,9 @@ module MashdCc
 
               def before_destroy
                 self.#{do_log}(:action => :delete)
-              #{m}
+                if self.methods.member? '#{m}'
+                  #{m}
+                end
               end
               RUBY
             else
@@ -117,7 +119,12 @@ module MashdCc
 
                 def #{column}=(val)
                   self.#{do_log}(:action => :modify, :column => :#{column}, :old => read_attribute(:#{column}), :new => val)
-                  #{m}(val)
+                  if self.methods.member? '#{m}'
+                    #{m}(val)
+                  else
+                    write_attribute(:#{column}, val)
+                  end
+                end
                 RUBY
               else
                 self.class_eval <<-RUBY
@@ -136,7 +143,11 @@ module MashdCc
                 self.class_eval <<-RUBY
                 def #{column}
                   self.#{do_log}(:action => :access, :column => :#{column})
-                #{m}
+                  if self.methods.member? '#{m}'
+                    #{m}
+                  else
+                    read_attribute(:#{column})
+                  end
                 end
                 RUBY
               else
