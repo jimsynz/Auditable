@@ -1,5 +1,17 @@
 module MashdCc
   module Acts 
+    class AuditableFilter
+      def before(controller)
+        if !controller.session[:current_user].nil?
+          Thread.current['auditable_current_user'] = controller.session[:current_user]
+        end
+      end
+      def after(controller)
+        if !Thread.current['auditable_current_user'].nil?
+          Thread.current['auditable_current_user'] = nil
+        end
+      end
+    end
     module Auditable 
 
       def self.included(base)
@@ -22,12 +34,14 @@ module MashdCc
             :using => :auditable, 
             :relation => :audits, 
             :when => [ :accessed, :modified, :saved, :created, :deleted ], 
-            :identity => lambda { "Unknown user" }, 
+            :except => [],
+            :identity => :current_user,
             :for => [ :all ],
             :log_field => :log,
             :identity_field => :identity,
           }
           options = defaults.merge(options)
+          options[:when] = options[:when] - options[:except]
           do_log = Helpers.random_method("auditor")
           if options[:using].is_a? Symbol and options[:relation].is_a? Symbol
             # Define the has_many relationship for the auditable model
@@ -41,6 +55,32 @@ module MashdCc
               define_method get_identity.to_sym do
                 f = options[:identity]
                 f.call
+              end
+            end
+          elsif options[:identity] == :current_user
+            get_identity = Helpers.random_method("get_identity")
+            current_user = 'auditable_current_user'
+            self.class_eval do 
+              define_method get_identity.to_sym do
+                if Thread.current[current_user].nil?
+                  'Unknown user'
+                elsif Thread.current[current_user].is_a? String
+                  Thread.current[current_user]
+                elsif Thread.current[current_user].is_a? ActiveRecord::Base
+                  # try a few likely candidates before giving up.
+                  model = Thread.current[current_user]
+                  if model.respond_to? :login
+                    model.login
+                  elsif model.respond_to? :username
+                    model.username
+                  elsif model.respond_to? :user
+                    model.user
+                  elsif model.respond_to? :name
+                    model.name
+                  else
+                    'Unknown user'
+                  end
+                end
               end
             end
           end
@@ -230,6 +270,7 @@ module MashdCc
         end
 
       end
+
     end
   end
 end

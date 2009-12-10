@@ -77,12 +77,12 @@ available are:
        audit logs. Defaults to 
          [ :accessed, :modified, :saved, :created, :deleted ].
   :identity =>
-     - lambda block containing any code needed to retrieve the user
-       identifier.  Defaults to 
-         lambda { "Unknown user" }. You might
-       want to try something like
-         lamba { ApplicationController.session[:current_user].name } 
-       if you're using restful_authentication.
+     - Auditable also adds an around_filter to your ApplicationController 
+       to make sure that it has access to the currently logged in user 
+       if at all possible.  All you need to do is make sure you set 
+       session[:current_user] and Auditable will do the rest. Otherwise
+       you can set :identity to a lambda or Proc block containing any code 
+       needed to retrieve whatever identifier you wish to use.
   :for => []
      - an array of symbols naming the model fields you wish to audit.
        Defaults to [ :all ] (:all is a special name meaning all fields).
