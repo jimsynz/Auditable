@@ -37,6 +37,7 @@ module MashdCc
             :except => [],
             :identity => :current_user,
             :for => [ :all ],
+            :not => [],
             :log_field => :log,
             :identity_field => :identity,
           }
@@ -142,7 +143,7 @@ module MashdCc
           if options[:for].member? :all
             columns = self.column_names()
           else
-            columns = options[:for].collect do |column|
+            columns = (options[:for]-options[:not]).collect do |column|
               column.to_s
             end
           end

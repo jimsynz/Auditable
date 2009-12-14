@@ -76,6 +76,8 @@ available are:
      - an array containing symbols describing on which actions to write
        audit logs. Defaults to 
          [ :accessed, :modified, :saved, :created, :deleted ].
+     - opposite :except => []
+       speficially exclude an action from auditing.
   :identity =>
      - Auditable also adds an around_filter to your ApplicationController 
        to make sure that it has access to the currently logged in user 
@@ -88,6 +90,8 @@ available are:
        Defaults to [ :all ] (:all is a special name meaning all fields).
        Note that you can never audit :id because it will cause an infinite
        loop.
+     - opposite :not => []
+       specifically exclude a field from auditing.
   :log_field =>
      - A symbol naming the text field in the auditor model to store the
        log information in. Only useful if you need something more than the
